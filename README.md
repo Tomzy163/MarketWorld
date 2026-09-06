@@ -26,7 +26,7 @@ The platform provides each seller with an isolated digital storefront and busine
 
 MarketWorld is designed around **PostgreSQL Row-Level Security (RLS)**, backend-enforced authorization, subscription-aware access control, secure payment processing, tenant isolation, audit logging, analytics, real-time communication, and production-grade security.
 
-The project is not intended to be rebuilt from scratch. Development must continue from the existing implementation, preserving the current architecture and reusing completed functionality wherever possible.
+<!-- The project is not intended to be rebuilt from scratch. Development must continue from the existing implementation, preserving the current architecture and reusing completed functionality wherever possible. -->
 
 ---
 
