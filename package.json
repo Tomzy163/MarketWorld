@@ -1,0 +1,36 @@
+{
+  "name": "marketworld",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MarketWorld multi-tenant marketplace SaaS modular monolith.",
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "workspaces": [
+    "apps/*",
+    "backend",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace backend",
+    "dev:web": "npm run dev --workspace apps/web",
+    "dev:backend": "npm run dev --workspace backend",
+    "build": "npm run build --workspaces --if-present",
+    "check": "npm run check --workspaces --if-present && node scripts/verify-required-files.js",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "node scripts/migrate.js",
+    "audit:static": "node scripts/static-audit.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  }
+}

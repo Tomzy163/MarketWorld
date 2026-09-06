@@ -1,0 +1,213 @@
+openapi: 3.1.0
+info:
+  title: MarketWorld API
+  version: 0.1.0
+  description: Foundation API for MarketWorld authentication, sessions, users, and health checks.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [success, error, requestId]
+      properties:
+        success:
+          type: boolean
+          const: false
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        requestId:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [customer, seller, agent, admin, super_admin]
+        status:
+          type: string
+paths:
+  /auth/register:
+    post:
+      security: []
+      summary: Register a customer or seller account.
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, firstName, lastName, role]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 12
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                role:
+                  type: string
+                  enum: [customer, seller]
+                businessName:
+                  type: string
+                  description: Required for seller registration.
+      responses:
+        "201":
+          description: Registration created and verification email queued.
+        "400":
+          description: Validation failed.
+        "409":
+          description: Email already registered.
+  /auth/login:
+    post:
+      security: []
+      summary: Login with email and password.
+      tags: [Auth]
+      responses:
+        "200":
+          description: Access token returned and refresh token set in an httpOnly cookie.
+        "401":
+          description: Invalid credentials.
+        "403":
+          description: Email verification required.
+  /auth/refresh:
+    post:
+      security: []
+      summary: Rotate the refresh token cookie and return a new access token.
+      tags: [Auth]
+      responses:
+        "200":
+          description: Session refreshed.
+        "401":
+          description: Refresh token invalid or expired.
+  /auth/logout:
+    post:
+      security: []
+      summary: Revoke the active refresh token cookie.
+      tags: [Auth]
+      responses:
+        "204":
+          description: Logged out.
+  /auth/forgot-password:
+    post:
+      security: []
+      summary: Request a password reset email.
+      tags: [Auth]
+      responses:
+        "200":
+          description: Password reset request accepted.
+  /auth/reset-password:
+    post:
+      security: []
+      summary: Reset password using a one-time token.
+      tags: [Auth]
+      responses:
+        "200":
+          description: Password reset completed and sessions revoked.
+  /auth/verify-email:
+    get:
+      security: []
+      summary: Verify an email address using a one-time token.
+      tags: [Auth]
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Email verified.
+  /users/me:
+    get:
+      summary: Return the authenticated user profile and resolved tenant context.
+      tags: [Users]
+      responses:
+        "200":
+          description: Current user.
+        "401":
+          description: Authentication required.
+    patch:
+      summary: Update the authenticated user's profile.
+      tags: [Users]
+      responses:
+        "200":
+          description: Profile updated.
+  /users/me/password:
+    patch:
+      summary: Change password and revoke existing sessions.
+      tags: [Users]
+      responses:
+        "204":
+          description: Password changed.
+  /users/me/sessions:
+    get:
+      summary: List refresh-token sessions for the authenticated user.
+      tags: [Users]
+      responses:
+        "200":
+          description: Sessions returned.
+  /users/me/sessions/{id}:
+    delete:
+      summary: Revoke a refresh-token session.
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Session revoked.
+  /health:
+    get:
+      security: []
+      summary: Basic service health.
+      tags: [Health]
+      responses:
+        "200":
+          description: Service is reachable.
+  /health/live:
+    get:
+      security: []
+      summary: Liveness probe.
+      tags: [Health]
+      responses:
+        "200":
+          description: Process is live.
+  /health/ready:
+    get:
+      security: []
+      summary: Readiness probe with database check.
+      tags: [Health]
+      responses:
+        "200":
+          description: Dependencies are ready.
+        "503":
+          description: Dependency is not ready.
