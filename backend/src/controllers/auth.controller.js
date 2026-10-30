@@ -84,7 +84,7 @@ function setRefreshCookie(response, token, expiresAt) {
     secure: env.REFRESH_COOKIE_SECURE,
     sameSite: env.REFRESH_COOKIE_SAMESITE,
     expires: expiresAt,
-    path: '/api/v1/auth',
+    path: `${env.API_PREFIX}/auth`,
   });
 }
 
@@ -93,7 +93,7 @@ function clearRefreshCookie(response) {
     httpOnly: true,
     secure: env.REFRESH_COOKIE_SECURE,
     sameSite: env.REFRESH_COOKIE_SAMESITE,
-    path: '/api/v1/auth',
+    path: `${env.API_PREFIX}/auth`,
   });
 }
 

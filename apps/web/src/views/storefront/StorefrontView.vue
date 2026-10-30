@@ -1,0 +1,6 @@
+<template><AppShell><section><p class="eyebrow">Public storefront</p><h1>{{ title }}</h1><p>Public product catalog UI. Connect this view to <code>GET /store/:slug/products</code> when that backend route is implemented.</p><div class="product-grid"><ProductCard v-for="product in products" :key="product.id" :product="product" @add="add" /></div></section></AppShell></template>
+<script setup>
+import { computed } from 'vue'; import { useRoute } from 'vue-router'; import AppShell from '../../components/common/AppShell.vue'; import ProductCard from '../../components/products/ProductCard.vue'; import { useCartStore } from '../../stores/cart.store.js'; import { useNotificationStore } from '../../stores/notification.store.js';
+const route = useRoute(); const cart = useCartStore(); const notices = useNotificationStore(); const title = computed(() => route.params.slug.replaceAll('-', ' ')); const products = [{ id: 'demo-1', name: 'Marketplace starter kit', category: 'Business', description: 'Demo catalog card for the public storefront.', price: 12500 }, { id: 'demo-2', name: 'Seller operations guide', category: 'Digital', description: 'Demo product used until catalog APIs are connected.', price: 7500 }];
+function add(product) { cart.add(product); notices.push(`${product.name} added to cart.`, 'success'); }
+</script>

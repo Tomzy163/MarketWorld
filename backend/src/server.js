@@ -12,7 +12,7 @@ const server = http.createServer(app);
 registerSocketServer(server);
 
 server.listen(env.PORT, () => {
-  logger.info({ port: env.PORT }, 'MarketWorld API listening');
+  logger.info({ app: env.APP_NAME, port: env.PORT }, 'API listening');
 });
 
 process.on('SIGTERM', () => {

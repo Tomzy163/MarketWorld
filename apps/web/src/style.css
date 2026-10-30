@@ -14,3 +14,13 @@
 html, body, #app { margin: 0; min-height: 100%; }
 body { min-height: 100vh; }
 a { color: inherit; }
+button, input, select { font: inherit; }
+.app-shell { min-height: 100vh; background: linear-gradient(135deg, #0f172a, #111827 30%, #1d4ed8); }
+.app-header, .page-content, .app-footer { width: min(1100px, calc(100vw - 2rem)); margin: auto; }
+.app-header { min-height: 4rem; display: flex; align-items: center; gap: 1.25rem; }
+.brand { font-weight: 800; text-decoration: none; } nav { display: flex; gap: 1rem; flex: 1; } nav a { text-decoration: none; color: #cbd5e1; } .header-actions { display: flex; gap: .75rem; align-items: center; } .cart-count { background: #22c55e; color: #052e16; border-radius: 999px; padding: .1rem .5rem; font-weight: 800; }
+.page-content { padding: 3rem 0; }.app-footer { padding: 1.5rem 0; color: #94a3b8; font-size: .875rem; }.hero { display: grid; place-items: center; min-height: calc(100vh - 8rem); }
+.button { display: inline-block; border: 0; border-radius: .5rem; background: #3b82f6; color: white; cursor: pointer; font-weight: 700; padding: .7rem 1rem; text-decoration: none; }.button.subtle { background: transparent; border: 1px solid #475569; }
+.form-card, .dashboard > article, .dashboard-grid article { max-width: 42rem; background: rgba(15, 23, 42, .9); border: 1px solid rgba(148,163,184,.25); border-radius: 1rem; padding: 2rem; }.form-card form { display: grid; gap: 1rem; }.form-card label { display: grid; gap: .4rem; }.form-card input, .form-card select { padding: .65rem; border-radius: .4rem; border: 1px solid #475569; background: #0f172a; color: inherit; }
+.dashboard-grid, .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }.product-card { background: #fff; color: #0f172a; border-radius: 1rem; overflow: hidden; }.product-card > div:last-child { padding: 1rem; }.product-image { display: grid; place-items: center; height: 7rem; background: #bfdbfe; color: #1e3a8a; font-size: 3rem; font-weight: 800; }.product-footer { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }.product-card p { color: #475569; }.toasts { position: fixed; right: 1rem; bottom: 1rem; display: grid; gap: .5rem; }.toast { background: #fff; color: #0f172a; padding: .75rem; border-radius: .5rem; box-shadow: 0 10px 30px #0004; }.toast.success { border-left: 4px solid #22c55e; }.toast button { border: 0; background: none; cursor: pointer; float: right; }.error { color: #fca5a5; }.success { color: #86efac; }
+@media (max-width: 640px) { .app-header { flex-wrap: wrap; padding: 1rem 0; } nav { order: 3; flex-basis: 100%; }.page-content { padding: 1.5rem 0; } }
