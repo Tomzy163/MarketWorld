@@ -6,6 +6,7 @@ import { authorizeConversationJoin } from '../services/communication/conversatio
 
 export function registerSocketServer(httpServer) {
   const io = new Server(httpServer, {
+    path: env.SOCKET_PATH,
     cors: {
       credentials: true,
       origin: env.CORS_ALLOWED_ORIGINS,

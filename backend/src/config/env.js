@@ -1,16 +1,30 @@
 import { resolve } from 'node:path';
-// import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import { z } from 'zod';
 
 dotenv.config({ path: resolve(process.cwd(), '.env') });
 dotenv.config({ path: resolve(process.cwd(), '..', '.env') });
+
+const optionalString = z.preprocess((value) => {
+  if (typeof value !== 'string') {
+    return value;
+  }
+
+  const trimmed = value.trim();
+  return trimmed === '' ? undefined : trimmed;
+}, z.string().optional());
 
 const csv = z.preprocess((value) => {
   if (typeof value !== 'string') {
     return [];
   }
 
-  return value
+  const normalized = value.trim();
+  if (!normalized) {
+    return [];
+  }
+
+  return normalized
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
@@ -22,42 +36,59 @@ const booleanFlag = z.preprocess((value) => {
   }
 
   if (typeof value === 'string') {
-    return ['true', '1', 'yes'].includes(value.toLowerCase());
+    const normalized = value.trim();
+    if (!normalized) {
+      return false;
+    }
+    return ['true', '1', 'yes'].includes(normalized.toLowerCase());
   }
 
   return false;
 }, z.boolean());
 
 const schema = z.object({
+  APP_NAME: z.string().min(1).default('MarketWorld'),
   NODE_ENV: z.enum(['development', 'test', 'staging', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(4000),
-  DATABASE_URL: z.string().min(1).optional(),
+  API_PREFIX: z.string().min(1).default('/api/v1'),
+  WEB_PORT: z.coerce.number().int().positive().default(5173),
+  API_BASE_URL: optionalString.pipe(z.string().url().optional()),
+  DATABASE_URL: optionalString.pipe(z.string().min(1).optional()),
   DATABASE_SSL: booleanFlag.default(false),
   FRONTEND_URL: z.string().url().default('http://localhost:5173'),
   CORS_ALLOWED_ORIGINS: csv.default(['http://localhost:5173']),
   TRUST_PROXY: booleanFlag.default(false),
-  JWT_ACCESS_SECRET: z.string().min(32).optional(),
-  JWT_REFRESH_SECRET: z.string().min(32).optional(),
+  LOG_LEVEL: z.enum(['silent', 'fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+  JSON_BODY_LIMIT: z.string().default('1mb'),
+  RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900000),
+  AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(20),
+  API_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(600),
+  SOCKET_PATH: z.string().default('/socket.io'),
+  JWT_ISSUER: z.string().default('marketworld-api'),
+  JWT_AUDIENCE: z.string().default('marketworld-web'),
+  JWT_ACCESS_SECRET: optionalString.pipe(z.string().min(32).optional()),
+  JWT_REFRESH_SECRET: optionalString.pipe(z.string().min(32).optional()),
   JWT_ACCESS_EXPIRES_IN: z.string().min(1).default('15m'),
   JWT_REFRESH_EXPIRES_IN_DAYS: z.coerce.number().int().positive().default(30),
   REFRESH_COOKIE_NAME: z.string().min(1).default('mw_refresh'),
   REFRESH_COOKIE_SECURE: booleanFlag.default(false),
   REFRESH_COOKIE_SAMESITE: z.enum(['strict', 'lax', 'none']).default('lax'),
   BCRYPT_ROUNDS: z.coerce.number().int().min(10).max(15).default(12),
-  PAYSTACK_SECRET_KEY: z.string().optional(),
-  PAYSTACK_PUBLIC_KEY: z.string().optional(),
-  PAYSTACK_SPLIT_CODE: z.string().optional(),
-  PAYSTACK_WEBHOOK_SECRET: z.string().optional(),
-  REDIS_URL: z.string().optional(),
-  SENDGRID_API_KEY: z.string().optional(),
-  SMTP_HOST: z.string().optional(),
+  PAYSTACK_API_URL: optionalString.pipe(z.string().url().optional()).default('https://api.paystack.co'),
+  PAYSTACK_SECRET_KEY: optionalString,
+  PAYSTACK_PUBLIC_KEY: optionalString,
+  PAYSTACK_SPLIT_CODE: optionalString,
+  PAYSTACK_WEBHOOK_SECRET: optionalString,
+  REDIS_URL: optionalString,
+  SENDGRID_API_KEY: optionalString,
+  SMTP_HOST: optionalString,
   SMTP_PORT: z.coerce.number().int().positive().default(587),
-  SMTP_USER: z.string().optional(),
-  SMTP_PASS: z.string().optional(),
-  EMAIL_FROM: z.string().email().optional(),
-  CLOUDINARY_CLOUD_NAME: z.string().optional(),
-  CLOUDINARY_API_KEY: z.string().optional(),
-  CLOUDINARY_API_SECRET: z.string().optional(),
+  SMTP_USER: optionalString,
+  SMTP_PASS: optionalString,
+  EMAIL_FROM: optionalString.pipe(z.string().email().optional()),
+  CLOUDINARY_CLOUD_NAME: optionalString,
+  CLOUDINARY_API_KEY: optionalString,
+  CLOUDINARY_API_SECRET: optionalString,
   TRIAL_ENABLED: booleanFlag.default(true),
   TRIAL_DAYS: z.coerce.number().int().positive().default(30),
   TRIAL_PLAN_NAME: z.string().min(1).default('Trial'),

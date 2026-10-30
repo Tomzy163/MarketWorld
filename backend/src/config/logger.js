@@ -3,7 +3,7 @@ import pinoHttp from 'pino-http';
 import { env } from './env.js';
 
 export const logger = pino({
-  level: env.NODE_ENV === 'test' ? 'silent' : process.env.LOG_LEVEL || 'info',
+  level: env.NODE_ENV === 'test' ? 'silent' : env.LOG_LEVEL,
   redact: {
     paths: [
       'req.headers.authorization',
@@ -19,7 +19,7 @@ export const logger = pino({
     censor: '[redacted]',
   },
   base: {
-    service: 'marketworld-backend',
+    service: `${env.APP_NAME}-backend`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     env: env.NODE_ENV,
   },
 });

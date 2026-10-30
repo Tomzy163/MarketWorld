@@ -14,16 +14,16 @@ export function createAccessToken(identity) {
     requireRuntimeSecret('JWT_ACCESS_SECRET'),
     {
       expiresIn: env.JWT_ACCESS_EXPIRES_IN,
-      issuer: 'marketworld-api',
-      audience: 'marketworld-web',
+      issuer: env.JWT_ISSUER,
+      audience: env.JWT_AUDIENCE,
     },
   );
 }
 
 export function verifyAccessToken(token) {
   return jwt.verify(token, requireRuntimeSecret('JWT_ACCESS_SECRET'), {
-    issuer: 'marketworld-api',
-    audience: 'marketworld-web',
+    issuer: env.JWT_ISSUER,
+    audience: env.JWT_AUDIENCE,
   });
 }
 

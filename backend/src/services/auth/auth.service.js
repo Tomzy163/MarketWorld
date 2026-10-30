@@ -189,7 +189,7 @@ export async function authenticateAccessToken(token) {
   let payload;
   try {
     payload = verifyAccessToken(token);
-  } catch (_error) {
+  } catch {
     throw new AppError('Authentication token is invalid or expired.', {
       code: 'INVALID_ACCESS_TOKEN',
       statusCode: 401,

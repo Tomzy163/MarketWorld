@@ -1,6 +1,8 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+const root = fileURLToPath(new URL('..', import.meta.url));
 const required = [
   'package.json',
   'pnpm-workspace.yaml',
@@ -23,7 +25,7 @@ const required = [
   'database/migrations/044_indexes.sql',
 ];
 
-const missing = required.filter((file) => !existsSync(resolve(file)));
+const missing = required.filter((file) => !existsSync(resolve(root, file)));
 
 if (missing.length > 0) {
   console.error(`Missing required foundation files:\n${missing.map((file) => `- ${file}`).join('\n')}`);

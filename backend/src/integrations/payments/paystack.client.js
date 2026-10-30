@@ -3,7 +3,7 @@ import { env } from '../../config/env.js';
 import { AppError } from '../../utils/app-error.js';
 import { safeEqual } from '../../utils/crypto.js';
 
-const baseUrl = 'https://api.paystack.co';
+const baseUrl = env.PAYSTACK_API_URL || 'https://api.paystack.co';
 
 export function verifyPaystackSignature(rawBody, signature) {
   if (!env.PAYSTACK_WEBHOOK_SECRET && !env.PAYSTACK_SECRET_KEY) {

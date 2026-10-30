@@ -1,10 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import { readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import pg from 'pg';
 import dotenv from 'dotenv';
 
-dotenv.config();
+const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+dotenv.config({ path: resolve(root, '.env') });
+dotenv.config({ path: resolve(root, 'backend', '.env') });
 
 const { Pool } = pg;
 
@@ -13,7 +16,7 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
-const migrationsDir = resolve('database/migrations');
+const migrationsDir = resolve(root, 'database/migrations');
 const files = readdirSync(migrationsDir)
   .filter((file) => file.endsWith('.sql'))
   .sort((a, b) => a.localeCompare(b));

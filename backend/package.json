@@ -10,7 +10,7 @@
     "build": "node ../scripts/check-js-syntax.js src tests",
     "check": "node ../scripts/verify-required-files.js && node src/config/env.js --check",
     "lint": "eslint .",
-    "test": "node --test tests"
+    "test": "node --test tests/**/*.test.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

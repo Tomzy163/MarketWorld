@@ -1,3 +1,4 @@
+import { env } from '../config/env.js';
 import { query } from '../db/pool.js';
 import { asyncHandler } from '../utils/async-handler.js';
 import { ok } from '../utils/http.js';
@@ -5,7 +6,7 @@ import { ok } from '../utils/http.js';
 export const healthController = asyncHandler(async (_request, response) => {
   return ok(response, {
     status: 'ok',
-    service: 'marketworld-api',
+    service: `${env.APP_NAME}-api`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
   });
 });
 

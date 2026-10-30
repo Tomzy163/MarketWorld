@@ -1,4 +1,5 @@
 import express from 'express';
+import { env } from './config/env.js';
 import { apiRouter } from './routes/index.js';
 import { applySecurityMiddleware } from './middleware/security.js';
 import { requestId } from './middleware/request-id.js';
@@ -13,7 +14,7 @@ export function createApp() {
   app.use(requestId);
   applySecurityMiddleware(app);
   app.use(httpLogger);
-  app.use('/api/v1', apiRateLimit, apiRouter);
+  app.use(env.API_PREFIX, apiRateLimit, apiRouter);
   app.use(notFound);
   app.use(errorHandler);
 

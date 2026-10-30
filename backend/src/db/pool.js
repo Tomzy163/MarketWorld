@@ -17,7 +17,7 @@ export function getPool() {
     pool = new Pool({
       connectionString: env.DATABASE_URL,
       ssl: env.DATABASE_SSL ? { rejectUnauthorized: true } : undefined,
-      application_name: 'marketworld-api',
+      application_name: `${env.APP_NAME}-api`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     });
   }
 

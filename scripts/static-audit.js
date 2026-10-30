@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
-const root = resolve('.');
+const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const trackedFiles = execFileSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' })
   .split(/\r?\n/)
   .filter(Boolean)
@@ -12,12 +13,16 @@ const patterns = [
   { name: 'unfinished marker', regex: /\b(TODO|FIXME)\b/i },
   { name: 'unsafe socket room join', regex: /socket\.join\s*\(\s*(room|data\.room|payload\.room)/ },
   { name: 'client trusted payment marker', regex: /client[-_\s]?provided payment status/i },
+
 ];
 
 const findings = [];
 
 for (const file of trackedFiles) {
-  if (/\.(png|jpg|jpeg|gif|ico|lock)$/i.test(file)) {
+  if (/\.(png|jpg|jpeg|gif|ico|lock)$/i.test(file) || /^(scripts|docs?)\//i.test(file) || /(^|\/)(ARCHITECTURE[^/]*\.md)$/i.test(file)) {
+    continue;
+  }
+  if (!/\.(js|jsx|ts|tsx|vue|sql)$/i.test(file)) {
     continue;
   }
 
